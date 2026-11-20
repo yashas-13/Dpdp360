@@ -1,5 +1,8 @@
+import asyncio
+
+import httpx
 import pytest
-from fastapi.testclient import TestClient
+from fastapi import FastAPI
 from pydantic import ValidationError
 
 from app.core.config import Settings
@@ -17,10 +20,19 @@ def _valid_settings(**overrides: object) -> Settings:
     return Settings(**values)
 
 
-def test_liveness_endpoint_returns_healthy_status() -> None:
-    client = TestClient(create_app(settings=_valid_settings()))
+def _get(app: FastAPI, path: str) -> httpx.Response:
+    async def request() -> httpx.Response:
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app),
+            base_url="http://test",
+        ) as client:
+            return await client.get(path)
 
-    response = client.get("/health/live")
+    return asyncio.run(request())
+
+
+def test_liveness_endpoint_returns_healthy_status() -> None:
+    response = _get(create_app(settings=_valid_settings()), "/health/live")
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
