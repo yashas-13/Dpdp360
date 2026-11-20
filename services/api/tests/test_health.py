@@ -1,12 +1,12 @@
 import asyncio
 
-from fastapi import FastAPI
 import httpx
 import pytest
-from pydantic import ValidationError
 
 from app.core.config import Settings
 from app.main import create_app
+from fastapi import FastAPI
+from pydantic import ValidationError
 
 
 def _valid_settings(**overrides: object) -> Settings:
@@ -38,7 +38,9 @@ def test_liveness_endpoint_returns_healthy_status() -> None:
     assert response.json() == {"status": "ok"}
 
 
-def test_app_creation_rejects_missing_required_configuration(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_app_creation_rejects_missing_required_configuration(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.delenv("DATABASE_URL", raising=False)
     monkeypatch.delenv("APP_SECRET_KEY", raising=False)
 
