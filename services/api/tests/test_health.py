@@ -1,8 +1,8 @@
 import asyncio
 
+from fastapi import FastAPI
 import httpx
 import pytest
-from fastapi import FastAPI
 from pydantic import ValidationError
 
 from app.core.config import Settings
