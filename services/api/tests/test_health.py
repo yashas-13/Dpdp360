@@ -2,7 +2,6 @@ import asyncio
 
 import httpx
 import pytest
-
 from app.core.config import Settings
 from app.main import create_app
 from fastapi import FastAPI
