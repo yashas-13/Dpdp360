@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 from fastapi import FastAPI
 
 from app.core.config import Settings
@@ -5,7 +7,7 @@ from app.core.config import Settings
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     """Create the API application after validating required runtime settings."""
-    runtime_settings = settings if settings is not None else Settings()
+    runtime_settings = settings if settings is not None else Settings(**cast(Any, {}))
 
     application = FastAPI(
         title="DPDP360 API",
